@@ -4,43 +4,194 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Inventaris Barang</title>
+
+    <!-- Bootstrap 5 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Custom Sidebar & Layout Styles -->
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styling */
+        #sidebar-wrapper {
+            min-height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            transition: margin 0.25s ease-out;
+        }
+
+        #sidebar-wrapper .sidebar-brand {
+            padding: 1.5rem 1.25rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0.75rem;
+            list-style: none;
+        }
+
+        .sidebar-nav .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-nav .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #64748b;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-nav .nav-link:hover {
+            color: var(--primary-color);
+            background-color: #e0e7ff;
+        }
+
+        .sidebar-nav .nav-link.active {
+            color: #ffffff;
+            background-color: var(--primary-color);
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+        }
+
+        .sidebar-nav .nav-link i {
+            font-size: 1.2rem;
+        }
+
+        /* Page Content Wrapper */
+        #page-content-wrapper {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin 0.25s ease-out;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.85rem 1.5rem;
+        }
+
+        /* Responsive Sidebar Toggle */
+        @media (max-width: 991.98px) {
+            #sidebar-wrapper {
+                margin-left: calc(-1 * var(--sidebar-width));
+            }
+
+            #page-content-wrapper {
+                margin-left: 0;
+            }
+
+            body.sb-expanded #sidebar-wrapper {
+                margin-left: 0;
+            }
+
+            body.sb-expanded #page-content-wrapper {
+                margin-left: 0;
+            }
+        }
+    </style>
 </head>
-<body class="bg-light min-vh-100 d-flex flex-column justify-content-between">
+<body>
 
-    <!-- Navbar dengan Tombol Logout -->
-    <nav class="navbar navbar-expand-lg navbar-white bg-white border-bottom py-3 mb-4">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="{{ route('todos.index') }}">
-                <i class="bi bi-box-seam me-2"></i>InventarisKu
-            </a>
-            <div class="d-flex align-items-center gap-3">
-                <span class="text-muted small d-none d-md-inline">Halo, <strong>{{ Auth::user()->name }}</strong></span>
-                <form action="{{ route('logout') }}" method="POST" class="m-0">
-                    @csrf
-                    <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold">
-                        <i class="bi bi-box-arrow-right me-1"></i> Logout
-                    </button>
-                </form>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar Start -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-brand">
+                <i class="bi bi-box-seam-fill text-primary fs-3"></i>
+                <span>InventarisKu</span>
             </div>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="container mb-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="card border-0 shadow-sm rounded-4">
+            <ul class="sidebar-nav">
+                <li class="nav-item">
+                    <a href="{{ route('todos.index') }}" class="nav-link active">
+                        <i class="bi bi-grid-1x2-fill"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Profil & Logout Mobile/Desktop di Sidebar Bawah -->
+            <div class="position-absolute bottom-0 start-0 w-100 p-3 border-top bg-light">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2 overflow-hidden">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 38px; height: 38px; flex-shrink: 0;">
+                            {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
+                        </div>
+                        <div class="text-truncate">
+                            <p class="mb-0 fw-semibold text-dark small text-truncate">{{ Auth::user()->name }}</p>
+                            <span class="text-muted small" style="font-size: 0.75rem;">Pengguna</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- Sidebar End -->
+
+        <!-- Page Content Start -->
+        <div id="page-content-wrapper" class="w-100">
+            <!-- Top Navbar -->
+            <nav class="navbar top-navbar sticky-top">
+                <div class="container-fluid px-0">
+                    <button class="btn btn-light border-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+
+                    <span class="navbar-text ms-2 fw-semibold text-dark d-none d-sm-inline">
+                        Dashboard Inventaris
+                    </span>
+
+                    <div class="ms-auto d-flex align-items-center gap-3">
+                        <span class="text-muted small d-none d-md-inline">Halo, <strong>{{ Auth::user()->name }}</strong></span>
+                        <form action="{{ route('logout') }}" method="POST" class="m-0">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold rounded-2 px-3">
+                                <i class="bi bi-box-arrow-right me-1"></i> Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content Container (Penuh Ke Kanan) -->
+            <main class="container-fluid p-4 flex-grow-1">
+                <div class="card border-0 shadow-sm rounded-4 w-100">
                     <div class="card-body p-4">
-                        
+
                         <!-- Header -->
-                        <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-4">
                             <div>
                                 <h4 class="fw-bold mb-0 text-dark">Daftar Inventaris Barang</h4>
                                 <small class="text-muted">Manajemen & Pengecekan Stok Barang</small>
                             </div>
-                            <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 fw-semibold">
+                            <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 fw-semibold align-self-start align-self-sm-center">
                                 {{ $todos->where('is_completed', false)->count() }} Belum Dicheck
                             </span>
                         </div>
@@ -79,7 +230,7 @@
 
                         <!-- Tabel Inventaris Barang -->
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle">
+                            <table class="table table-hover align-middle w-100">
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col" style="width: 5%;">No</th>
@@ -205,17 +356,22 @@
 
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
+        <!-- Page Content End -->
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-white border-top py-3 text-center text-muted small">
-        <div class="container">
-            &copy; {{ date('Y') }} Inventaris App. All rights reserved.
-        </div>
-    </footer>
-
+    <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function () {
+                    document.body.classList.toggle('sb-expanded');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
